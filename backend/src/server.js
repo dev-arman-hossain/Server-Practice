@@ -1,10 +1,28 @@
 import express from "express"
 import {ENV} from "./lib/env.js"
-import { connect } from "mongoose"
 import { connectDB } from "./lib/db.js"
+import cors from "cors"
+import { serve } from "inngest/express"
+import { inngest } from "./lib/inngest.js"
+import { functions } from "./lib/inngest.js"
 
 const app = express ()
-await connectDB()
+await connectDB();
+
+//middlewares
+app.use (express.json())
+app.use(
+  cors({
+    origin: [
+      ENV.CLIENT_URL,
+      ENV.CLIENT_LIVE_URL,
+    ],
+    credentials: true,//allow session cookie from browser to pass through
+  })
+);
+
+app.use("/api/inngest", serve({client:inngest, functions}))
+
 
 app.get("/", (req, res)=>{
     res.status(200).json({msg:"success from backend on port 485"})
