@@ -20,15 +20,25 @@ app.use(
   })
 );
 
-app.use("/api/inngest", serve({client:inngest, functions}))
+app.use("/api/inngest", serve({client: inngest, functions }))
 
 
 app.get("/", (req, res)=>{
     res.status(200).json({msg:"success from backend on port 485"})
 })
 
-app.listen(ENV.PORT, ()=> {
-    console.log("server is running on port", ENV.PORT)
-    
-})
 
+
+
+const startServer = async () => {
+    try {
+      await connectDB();
+      app.listen(ENV.PORT, ()=> console.log("server is running on port", ENV.PORT));
+   
+    } catch (error) {
+      console.error("Error starting the server:", error);
+    }
+}
+
+
+startServer();
